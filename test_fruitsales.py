@@ -1,6 +1,6 @@
 import os
+import csv
 import unittest
-import pandas as pd
 
 class TestFruitSales(unittest.TestCase):
 
@@ -12,21 +12,21 @@ class TestFruitSales(unittest.TestCase):
     
     def test_columns_exist(self):
         expected_columns = ['Apples','Bananas']
-        try:
-            df = pd.read_csv(self.csv_file)
+        with open('fruit.csv', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            reader.fieldnames
             for col in expected_columns:
-                assert col in df.columns
-        except Exception as e:
-            assert False, e
+                assert col in reader.fieldnames
     
     def test_values_exist(self):
-        try:
-            df = pd.read_csv(self.csv_file)
-            expected_values = {'Apples': [35,41],'Bananas':  [21,34]}
-            for key in expected_values.keys():
-                assert expected_values[key] in df[key].values
-        except Exception as e:
-            assert False, e
+        expected_values = [{'Apples': '35', 'Bananas': '21'}, 
+                            {'Apples': '41', 'Bananas': '34'}]
+        with open('fruit.csv', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            data = list(reader)
+            assert data == expected_values
+
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
